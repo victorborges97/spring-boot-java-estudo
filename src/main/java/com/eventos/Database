@@ -1,0 +1,47 @@
+Tem duas formas de configurar o database:
+1 Criando o arquivo DataConfiguration, com esses dados abaixo:
+    ```
+    package com.eventos;
+
+    import javax.sql.DataSource;
+
+    import org.springframework.context.annotation.Bean;
+    import org.springframework.context.annotation.Configuration;
+    import org.springframework.jdbc.datasource.DriverManagerDataSource;
+    import org.springframework.orm.jpa.JpaVendorAdapter;
+    import org.springframework.orm.jpa.vendor.Database;
+    import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+
+    @Configuration
+    public class DataConfiguration {
+
+    	@Bean
+        public DataSource dataSource(){
+            DriverManagerDataSource dataSource = new DriverManagerDataSource();
+            dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+            dataSource.setUrl("jdbc:mysql://IPDOBANCO:PORTA/NAMEDATABASE");
+            dataSource.setUsername("NAMEUSUARIO");
+            dataSource.setPassword("SENHAUSUARIO");
+            return dataSource;
+        }
+
+    	@Bean
+    	public JpaVendorAdapter jpaVendorAdapter(){
+    		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+    		adapter.setDatabase(Database.MYSQL);
+    		adapter.setShowSql(true);
+    		adapter.setGenerateDdl(true);
+    		adapter.setDatabasePlatform("org.hibernate.dialect.MySQLDialect");
+    		adapter.setPrepareConnection(true);
+    		return adapter;
+    	}
+
+    }
+    ```
+
+2 Colocando as configurações do mysql no arquivo "resources/application.properties":
+    spring.datasource.url=jdbc:mysql://${MYSQL_HOST:IPDOBANCO}:PORTA/NAMEDATABASE
+    spring.datasource.username=NAMEUSUARIO
+    spring.datasource.password=SENHAUSUARIO
+    spring.jpa.hibernate.ddl-auto=update
+    spring.jpa.show-sql=true
